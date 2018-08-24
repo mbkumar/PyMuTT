@@ -19,7 +19,7 @@ class HarmonicThermo:
             vib_energies (numpy array): Vibrational energies in eV
             pot_energy (float): Potential energy in eV
         """
-        self.model = thermochemistry.HarmonicThermo(vib_energies=vib_energies,
+        self.model = thermochemistry.HarmonicThermo(vib_energies,
                                                     potentialenergy=pot_energy)
 
     def get_CpoR(self, Ts):
@@ -32,7 +32,7 @@ class HarmonicThermo:
         """
         return get_CvoR_vib(vib_energies=self.model.vib_energies, Ts=Ts)
 
-    def get_HoRT(self, Ts, verbose = False):
+    def get_HoRT(self, Ts, verbose=False):
         """Calculate dimensionless enthalpy at a given temperature.
 
         Args:
