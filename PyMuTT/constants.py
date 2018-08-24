@@ -8,8 +8,7 @@ def R(units):
     """Universal molar gas constant, R
 
     Parameters:
-        units : str
-            Units for R. Supported units
+        units (str): Units for R. Supported units
             - J/mol/K
             - kJ/mol/K
             - L kPa/mol/K
@@ -25,8 +24,7 @@ def R(units):
             - cm3 atm/mol/K
             - eV/K (This option implies per molecule. i.e. Uses the value of kb)
     Returns:
-        R : float
-            Universal molar gas constant in appropriate units
+        R (float): Universal molar gas constant in appropriate units
     """
     R_dict = {
         'J/mol/K': 8.3144598,
@@ -49,28 +47,17 @@ def R(units):
     except KeyError:
         raise KeyError('Invalid unit for R: {}. Use help(PyMuTT.constants.R) for accepted units.'.format(units))
 
-def h(units, bar = False):
+def h(units, bar=False):
     """Planck's constant, h
 
-    Parameters
-    ----------
-        units : str
-            Units for h. Supported units
-
+    Parameters:
+        units (str): Units for h. Supported units
             - J s
             - kJ s
             - eV s
-
-        bar : bool, optional
-            If True, returns h/2*pi . Default is False
-    Returns
-    -------
-        h : float
-            Planck's constant in appropriate units
-    Raises
-    ------
-        KeyError
-            If units is not supported.
+        bar (bool, optional): If True, returns h/2*pi . Default is False
+    Returns:
+        h (float): Planck's constant in appropriate units
     """
     h_dict = {
         'J s': 6.626070040e-34,
@@ -91,30 +78,20 @@ def h(units, bar = False):
 def kb(units):
     """Boltzmann constant
 
-    Parameters
-    ----------
-        units : str
-            Units for kb. Supported units
-
+    Parameters:
+        units (str): Units for kb. Supported units
             - J/K
             - eV/K
             - cal/K
-
-    Returns
-    -------
-        kb : float
-            Boltzmann constant in appropriate units
-    Raises
-    ------
-        KeyError
-            If units is not supported.
+    Returns:
+        kb (float): Boltzmann constant in appropriate units
     """
     kb_dict = {
         'J/K': 1.38064852e-23,
         'kJ/K': 1.38064852e-26,
         'eV/K': 8.6173303e-5,
         'cal/K': 3.2976230e-24,
-        'kcal/K': 3.2976230e-27
+        'kcal/K': 3.2976230e-27,
     }
     try:
         return kb_dict[units]
@@ -124,22 +101,12 @@ def kb(units):
 def c(units):
     """Speed of light
 
-    Parameters
-    ----------
-        units : str
-            Units for c. Supported units
-
+    Parameters:
+        units (str): Units for c. Supported units
             - m/s
             - cm/s
-
-    Returns
-    -------
-        c : float
-            Speed of light in appropriate units
-    Raises
-    ------
-        KeyError
-            If units is not supported.
+    Returns:
+        c (float): Speed of light in appropriate units
     """
     c_dict = {
         'm/s': 299792458.,
@@ -153,23 +120,13 @@ def c(units):
 def m_e(units):
     """Mass of an electron
 
-    Parameters
-    ----------
-        units : str
-            Units for m_e. Supported units
-
+    Parameters:
+        units (str): Units for m_e. Supported units
             - kg
             - g
             - amu
-
-    Returns
-    -------
-        m_e : float
-            Mass of electron in appropriate units
-    Raises
-    ------
-        KeyError
-            If units is not supported.
+    Returns:
+        m_e (float): Mass of electron in appropriate units
     """
     m_e_dict = {
         'kg': 9.10938356e-31,
@@ -184,22 +141,12 @@ def m_e(units):
 def m_p(units):
     """Mass of a proton
 
-    Parameters
-    ----------
-        units : str
-            Units for m_p. Supported units
-
+    Parameters:
+        units (str): Units for m_p. Supported units
             - kg
             - amu
-
-    Returns
-    -------
-        m_p : float
-            Mass of proton in appropriate units
-    Raises
-    ------
-        KeyError
-            If units is not supported.
+    Returns:
+        m_p (float): Mass of proton in appropriate units
     """
     m_p_dict = {
         'kg': 1.6726219e-27,
@@ -214,11 +161,8 @@ def m_p(units):
 def P0(units):
     """Reference pressure
 
-    Parameters
-    ----------
-        units : str
-            Units for P0. Supported units
-
+    Parameters:
+        units (str): Units for P0. Supported units
             - bar
             - atm
             - Pa
@@ -227,15 +171,8 @@ def P0(units):
             - psi
             - mmHg
             - Torr
-
-    Returns
-    -------
-        P0 : float
-            Reference pressure in appropriate units
-    Raises
-    ------
-        KeyError
-            If units is not supported.
+    Returns:
+        P0 (float): Reference pressure in appropriate units
     """
     P0_dict = {
         'bar': 1.01325,
@@ -256,30 +193,20 @@ def P0(units):
 def T0(units):
     """Room temperature
 
-    Parameters
-    ----------
-        units : str
-            Units for T0. Supported units
-
+    Parameters:
+        units (str): Units for T0. Supported units
             - K
             - C
             - R
             - F
-
-    Returns
-    -------
-        T0 : float
-            Room temperature in appropriate units
-    Raises
-    ------
-        KeyError
-            If units is not supported.
+    Returns:
+        T0 (float): Room temperature in appropriate units
     """
     T0_dict = {
-    'K': 298.15,
-    'C': 25.,
-    'R': 533.07,
-    'F': 73.4
+        'K': 298.15,
+        'C': 25.,
+        'R': 533.07,
+        'F': 73.4
     }
     try:
         return T0_dict[units]
@@ -293,30 +220,20 @@ Na = 6.02214086e23 #Avogadro number
 e = 1.6021766208e-19 #Electronic charge
 """float : Electronic charge in Coulombs"""
 
-def convert_unit(num = None, from_ = None, to = None):
+def convert_unit(num=None, from_=None, to=None):
     """Converts units between two unit sets
 
-    Parameters
-    ----------
-        num : float, optional
-            Number to convert. I not specified, will return the appropriate conversion factor.
-        from_ : str
-            Units that num is currently in
-        to : str
-            Units you would like num to be in
-    Returns
-    -------
-        conversion_num : float
-            num in the appropriate units
-    Raises
-    ------
-        ValueError
-            If unit types are not consistent or not supported
+    Parameters:
+        num (float, optional): Number to convert. I not specified,
+                               will return the appropriate conversion factor.
+        from_ (str): Units that num is currently in
+        to (str): Units you would like num to be in
+    Returns:
+        conversion_num (float): num in the appropriate units
 
     **Supported Units**
 
     *Energy*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -329,7 +246,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Energy/Amount*
-
     =========== =====================
     Symbol      Unit
     =========== =====================
@@ -341,7 +257,6 @@ def convert_unit(num = None, from_ = None, to = None):
     =========== =====================
 
     *Time*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -351,7 +266,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Amount*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -360,7 +274,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Temperature*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -369,7 +282,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Length*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -380,7 +292,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Area*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -390,7 +301,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Volume*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -401,7 +311,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Mass*
-
     ========= =================
     Symbol    Unit
     ========= =================
@@ -411,7 +320,6 @@ def convert_unit(num = None, from_ = None, to = None):
     ========= =================
 
     *Pressure*
-
     ========= =======================
     Symbol    Unit
     ========= =======================
@@ -423,7 +331,6 @@ def convert_unit(num = None, from_ = None, to = None):
     mmHg      Millilmeters of Mercury
     psi       Pounds per square inch
     ========= =======================
-
     """
 
     type_dict = {
