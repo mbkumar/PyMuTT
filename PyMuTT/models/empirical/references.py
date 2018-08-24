@@ -14,7 +14,8 @@ class References:
     Attributes
     ----------
         _references : list of ``PyMuTT.models.empirical.basethermo.BaseThermo``
-            Reference species. Each member of the list should have the attributes ``T_ref`` and ``HoRT_ref``
+            Reference species. Each member of the list should have the
+            attributes ``T_ref`` and ``HoRT_ref``
         HoRT_element_offset : dict
             Dimensionless enthalpy offset for each element
         T_ref : float
@@ -22,7 +23,8 @@ class References:
 
     Notes
     -----
-        List-like methods (such as ``append``, ``extend``) will affect the ``_references`` attribute.
+        List-like methods (such as ``append``, ``extend``) will affect the
+        ``_references`` attribute.
     """
     def __init__(self, references):
         self._references = references
@@ -90,14 +92,14 @@ class References:
         return tuple(sorted(unique_elements))
 
     def get_elements_matrix(self):
-        """Creates the elements matrix required for calculating the offset. The elements are sorted in alphabetical order.
+        """Creates the elements matrix required for calculating the
+        offset. The elements are sorted in alphabetical order.
 
         Returns
         -------
             Element matrix : (M,N) `numpy.ndarray`_
-                Rows correspond to reference species. Columns correspond to elements
-
-        .. _`numpy.ndarray`: https://docs.scipy.org/doc/numpy-1.14.0/reference/generated/numpy.ndarray.html
+                Rows correspond to reference species. Columns correspond
+                to elements
         """
         elements = self.get_elements()
         elements_mat = np.zeros((len(self), len(elements)))
@@ -111,7 +113,8 @@ class References:
         return elements_mat
 
     def fit_HoRT_offset(self):
-        """Calculate the elemental offset between DFT and formation energies using reference species."""
+        """Calculate the elemental offset between DFT and formation
+        energies using reference species."""
         elements = self.get_elements()
         elements_mat = self.get_elements_matrix()
 
@@ -126,7 +129,7 @@ class References:
         ref_offset = HoRT_ref_dft - HoRT_ref_exp #Offset between the DFT energies and experimental values for reference species
         HoRT_element_offset = np.linalg.lstsq(elements_mat, ref_offset, rcond=None)[0] #Offset between the DFT energies and experimental values for each element
         #Convert HoRT_element_offset to a dictionary
-        self.HoRT_element_offset = {element: offset for element, offset in zip(elements, HoRT_element_offset)}
+        self.HoRT_element_offset = dict(zip(elements, HoRT_element_offset))
 
     def get_HoRT_offset(self, elements, Ts=None):
         """Returns the offset due to the element composition of a specie. The offset is defined as follows:
