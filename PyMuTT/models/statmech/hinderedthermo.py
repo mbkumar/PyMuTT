@@ -17,32 +17,32 @@ class HinderedThermo:
     See further documentation from `ase.thermochemistry.HinderedThermo`_
 
     Parameters:
-        vib_energies: ((N,) `numpy.ndarray`_) Vibrational energies in eV                                                               |
-        trans_barrier_energy: (float) Translational energy barrier in eV                                                                       |
-        rot_barrier_energy: (float) Rotational energy barrier in eV                                                                          |
-        sitedensity: (float) Site density in cm^-2                                                                                    |
+        vib_energies: ((N,) `numpy.ndarray`_) Vibrational energies in eV
+        trans_barrier_energy: (float) Translational energy barrier in eV
+        rot_barrier_energy: (float) Rotational energy barrier in eV
+        sitedensity: (float) Site density in cm^-2
         rotationalminima: (int) Number of equivalent minima for an adsorbate
-            full rotation e.g. 6 for an adsorbate on an fcc(111) top site |
-        potentialenergy:  (float) Potential energy in eV                                                                                   |
-        atoms: (`ase.Atoms`_) Atoms object required for calculating rotational modes                                            |
-        symmetrynumber: (int) Symmetry number                                                                                            |
-            For more details, see DOI:10.1007/s00214-007-0328-0                                                              |
+            full rotation e.g. 6 for an adsorbate on an fcc(111) top site
+        potentialenergy:  (float) Potential energy in eV
+        atoms: (`ase.Atoms`_) Atoms object required for calculating rotational modes
+        symmetrynumber: (int) Symmetry number
+            For more details, see DOI:10.1007/s00214-007-0328-0
             Some symmetry numbers are given below
-            Point group    symmetry number                                                                                   |
-            ===========    ===============                                                                                   |
-            C1             1                                                                                                 |
-            Cs             1                                                                                                 |
-            C2             2                                                                                                 |
-            C2v            2                                                                                                 |
-            C3v            3                                                                                                 |
-            Cinfv          1                                                                                                 |
-            D2h            4                                                                                                 |
-            D3h            6                                                                                                 |
-            D5h            10                                                                                                |
-            Dinfh          2                                                                                                 |
-            D3d            6                                                                                                 |
-            Td             12                                                                                                |
-            Oh             24                                                                                                |
+            Point group    symmetry number
+            ===========    ===============
+            C1             1
+            Cs             1
+            C2             2
+            C2v            2
+            C3v            3
+            Cinfv          1
+            D2h            4
+            D3h            6
+            D5h            10
+            Dinfh          2
+            D3d            6
+            Td             12
+            Oh             24
 
         mass: (float) Mass of adsorbate in amu. If unspecified,
             uses the atoms object
