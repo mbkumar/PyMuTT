@@ -68,7 +68,8 @@ class Thermo:
 
     Seamlessly calculate enthalpy and entropy based on the supplied ASE model.
     Parameters:
-        model (str): Choice of model. Options are 'harmonic', 'hindered', 'ideal gas'
+        specie_type (str): Specie classification for thermochemistry.
+                           Options are 'harmonic', 'hindered', 'ideal gas'
         vib_energies (array): Vibrational energies in eV
         *args: Additional arguments needed for the ASE model
         **kwargs: Additional keyword arguments associated with the ASE model.
