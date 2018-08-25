@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import variation
 from warnings import warn
 from PyMuTT import constants as c
-from PyMuTT.models.empirical import BaseThermo
+from PyMuTT.models.empirical_model import BaseThermo
 
 class Nasa(BaseThermo):
     """Stores the information for an individual nasa specie
@@ -63,121 +63,92 @@ class Nasa(BaseThermo):
             self.fit(T_low=self.T_low, T_high=self.T_high, Ts=Ts,
                      CpoR=CpoR, T_ref=T_ref, HoRT_dft=HoRT_ref, SoR_ref=SoR_ref)
 
-    def get_a(self, T):
+    def get_a(self, temperature):
         """Returns the correct polynomial range based on T_low, T_mid and T_high
 
         Parameters
         ----------
-            T : float
+            temperature : float
                 Temperature in K
         Returns
         -------
             a : (7,) `numpy.ndarray`_
                 NASA polynomial coefficients
         """
-        if T < self.T_mid:
-            if T < self.T_low:
+        if temperature < self.T_mid:
+            if temperature < self.T_low:
                 warn('Temperature below T_low for {}'.format(self.name), RuntimeWarning)
             return self.a_low
         else:
-            if T > self.T_high:
+            if temperature > self.T_high:
                 warn('Temperature above T_high for {}'.format(self.name), RuntimeWarning)
             return self.a_high
 
-    def get_CpoR(self, Ts):
+    def get_CpoR(self, temperature):
         """Calculate the dimensionless heat capacity
 
         Parameters
         ----------
-            Ts : float or (N,)` numpy.ndarray`_
-                Temperature(s) in K
+            temperature : float
+                Temperature in K
         Returns
         -------
-            CpoR : float or (N,) `numpy.ndarray`_
+            CpoR : float
                 Dimensionless heat capacity
         """
-        try:
-            iter(Ts)
-        except TypeError:
-            a = self.get_a(T=Ts)
-            CpoR = get_nasa_CpoR(a=a, T=Ts)
-        else:
-            CpoR = np.zeros(len(Ts))
-            for i, T in enumerate(Ts):
-                a = self.get_a(T)
-                CpoR[i] = get_nasa_CpoR(a=a, T=T)
+        a = self.get_a(temperature)
+        CpoR = get_nasa_CpoR(a, temperature)
         return CpoR
 
-    def get_HoRT(self, Ts):
+    def get_HoRT(self, temperature):
         """Calculate the dimensionless enthalpy
 
         Parameters
         ----------
-            Ts : float or (N,) `numpy.ndarray`_
-                Temperature(s) in K
+            temperature : float
+                Temperature in K
         Returns
         -------
-            HoRT : float or (N,) `numpy.ndarray`_
+            HoRT : float
                 Dimensionless enthalpy
         """
-        try:
-            iter(Ts)
-        except TypeError:
-            a = self.get_a(T=Ts)
-            HoRT = get_nasa_HoRT(a=a, T=Ts)
-        else:
-            HoRT = np.zeros_like(Ts)
-            for i, T in enumerate(Ts):
-                a = self.get_a(T=T)
-                HoRT[i] = get_nasa_HoRT(a=a,T=T)
+        a = self.get_a(temperature)
+        HoRT = get_nasa_HoRT(a, temperature)
+
         return HoRT
 
-    def get_SoR(self, Ts):
+    def get_SoR(self, temperature):
         """Calculate the dimensionless entropy
 
         Parameters
         ----------
-            Ts : float or (N,) `numpy.ndarray`_
-                Temperature(s) in K
+            temperature : float
+                Temperature in K
         Returns
         -------
-            SoR : float or (N,) `numpy.ndarray`_
+            SoR : float
                 Dimensionless entropy
         """
-        try:
-            iter(Ts)
-        except TypeError:
-            a = self.get_a(T=Ts)
-            SoR = get_nasa_SoR(a=a,T=Ts)
-        else:
-            SoR = np.zeros_like(Ts)
-            for i, T in enumerate(Ts):
-                a = self.get_a(T=T)
-                SoR[i] = get_nasa_SoR(a=a, T=T)
+        a = self.get_a(temperature)
+        SoR = get_nasa_SoR(a, temperature)
+
         return SoR
 
-    def get_GoRT(self, Ts):
+    def get_GoRT(self, temperature):
         """Calculate the dimensionless Gibbs free energy
 
         Parameters
         ----------
-            Ts : float or (N,) `numpy.ndarray`_
+            temperature : float or (N,) `numpy.ndarray`_
                 Temperature(s) in K
         Returns
         -------
             GoRT : float or (N,) `numpy.ndarray`_
                 Dimensionless Gibbs free energy
         """
-        try:
-            iter(Ts)
-        except TypeError:
-            a = self.get_a(T=Ts)
-            GoRT = get_nasa_GoRT(a=a, T=Ts)
-        else:
-            GoRT = np.zeros_like(Ts)
-            for i, T in enumerate(Ts):
-                a = self.get_a(T=T)
-                GoRT[i] = get_nasa_GoRT(a=a, T=T)
+        a = self.get_a(temperature)
+        GoRT = get_nasa_GoRT(a, temperature)
+
         return GoRT
 
     def fit(self, T_low=None, T_high=None, Ts=None, CpoR=None, T_ref=None,
@@ -232,7 +203,7 @@ class Nasa(BaseThermo):
         else:
             if Ts is None:
                 Ts = np.linspace(self.T_low, self.T_high)
-            CpoR = self.thermo_model.get_CpoR(Ts=Ts)
+            CpoR = np.array(map(self.thermo_model.get_CpoR, Ts))
 
         #Get reference temperature
         if T_ref is None:
@@ -241,12 +212,12 @@ class Nasa(BaseThermo):
         #Get reference enthalpy
         if HoRT_dft is None:
             if self.HoRT_dft is None:
-                self.HoRT_dft = self.thermo_model.get_HoRT(Ts=T_ref)
+                self.HoRT_dft = self.thermo_model.get_HoRT(T_ref)
             HoRT_dft = self.HoRT_dft
 
         #Get reference entropy
         if SoR_ref is None:
-            SoR_ref = self.thermo_model.get_SoR(Ts=T_ref)
+            SoR_ref = self.thermo_model.get_SoR(T_ref)
 
         #Get references
         if references is not None:
@@ -277,7 +248,8 @@ class Nasa(BaseThermo):
         self.fit_SoR(T_ref, SoR_ref)
 
     def fit_CpoR(self, Ts, CpoR):
-        """Fit a[0]-a[4] coefficients in a_low and a_high attributes given the dimensionless heat capacity data
+        """Fit a[0]-a[4] coefficients in a_low and a_high attributes
+        given the dimensionless heat capacity data
 
         Parameters
         ----------
@@ -286,8 +258,10 @@ class Nasa(BaseThermo):
             CpoR : (N,) `numpy.ndarray_`
                 Dimensionless heat capacity
         """
-        #If the Cp/R does not vary with temperature (occurs when no vibrational frequencies are listed)
-        if (np.mean(CpoR) < 1e-6 and np.isnan(variation(CpoR))) or variation(CpoR) < 1e-3 or all(np.isnan(CpoR)):
+        #If the Cp/R does not vary with temperature (occurs when no
+        # vibrational frequencies are listed)
+        if (np.mean(CpoR) < 1e-6 and np.isnan(variation(CpoR))) or \
+                variation(CpoR) < 1e-3 or all(np.isnan(CpoR)):
             self.T_mid = Ts[int(len(Ts)/2)]
             self.a_low = np.zeros(7)
             self.a_high = np.zeros(7)
@@ -298,10 +272,12 @@ class Nasa(BaseThermo):
                 #Need at least 5 points to fit the polynomial
                 if i > 5 and i < (len(Ts)-6):
                     #Separate the temperature and heat capacities into low and high range
-                    (R2[i], a_low, a_high) = self._get_CpoR_R2(Ts=Ts, CpoR=CpoR, i_mid=i)
+                    (R2[i], a_low, a_high) = self._get_CpoR_R2(
+                        Ts=Ts, CpoR=CpoR, i_mid=i)
             max_R2 = max(R2)
             max_i = np.where(max_R2 == R2)[0][0]
-            (max_R2, a_low_rev, a_high_rev) = self._get_CpoR_R2(Ts=Ts, CpoR=CpoR, i_mid=max_i)
+            (max_R2, a_low_rev, a_high_rev) = self._get_CpoR_R2(
+                Ts=Ts, CpoR=CpoR, i_mid=max_i)
             empty_arr = np.zeros(2)
             self.T_mid = Ts[max_i]
             self.a_low = np.concatenate((a_low_rev[::-1], empty_arr))
