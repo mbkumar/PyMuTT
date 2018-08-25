@@ -8,7 +8,7 @@ Operations related to the Zacros wrapper
 import numpy as np
 from PyMuTT import constants as c
 from PyMuTT import get_molecular_weight as mw
-from PyMuTT.models.empirical import BaseThermo
+from PyMuTT.models.empirical_model import BaseThermo
 
 
 class Zacros(BaseThermo):
