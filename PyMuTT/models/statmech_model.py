@@ -20,9 +20,6 @@ def get_CvoR_trans(degrees=3):
         degrees (int): Degrees of freedom the specie has.
             Gas-phase species will be 3 degrees whereas surface species
             may have less depending on the thermodynamic model
-
-    Returns:
-        Dimensionless translational heat capacity
     """
     if degrees > 3:
         raise ValueError(
@@ -40,9 +37,6 @@ def get_CvoR_rot(geometry):
     Parameters:
         geometry (str): Geometry of the specie. Accepted values are
             "monatomic", "linear", and "nonlinear".
-
-    Returns:
-        Dimensionless rotational heat capacity
     """
     if geometry == 'monatomic':
         return 0.
@@ -62,9 +56,6 @@ def get_CvoR_vib(vib_energies, temperature):
     Parameters:
         vib_energies (array of floats): Vibrational energies in eV
         temperature (float): Temperature in K
-
-    Returns:
-        Dimensionless vibrational heat capacity
     """
     dimensionless_vibs = vib_energies/c.kb('eV/K')/temperature
     CvoR_vib = np.sum((0.5 * dimensionless_vibs)**2 * (
