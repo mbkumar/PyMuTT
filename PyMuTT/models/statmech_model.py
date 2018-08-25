@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Operations for ideal gas models"""
+"""Obtain the thermodynamic properties for given species.
+
+ASE thermochemistry models are used to evalaute the standard properties
+such as enthalpy and entropy
+"""
 
 import numpy as np
 from ase import thermochemistry
