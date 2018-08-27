@@ -14,7 +14,8 @@ from PyMuTT.models.empirical.nasa import Nasa
 class ThermDat(object):
     """Class to handle ChemKin thermdat files. 
     
-    Convert Chemkin thermdat files to and from species with Nasa polynomials.
+    Read(write) species with Nasa polynomials from(to) Chemkin
+    outfile file with .thermdat extension.
     """
 
     def __init__(self, nasa_species):
@@ -26,6 +27,7 @@ class ThermDat(object):
         self.nasa_species = nasa_species
 
     def __str__(self, write_date=True):
+        """Generate string representation for the member data"""
         def gen_line1(specie, write_date=True):
             """Generate the first line for each of the species. 
             
@@ -36,7 +38,9 @@ class ThermDat(object):
                 specie : PyMuTT.models.empirical.thermdat.Thermdat
                     Nasa specie to take information from
                 write_date : bool, optional
-                    Whether or not the date should be written. If False, writes the first 8 characters of ``notes`` attribute. Defaults to True
+                    Whether or not the date should be written.
+                    If False, writes the first 8 characters of ``notes``
+                    attribute. Defaults to True
             """
             # For reference
             name_note_pos = [
@@ -84,57 +88,28 @@ class ThermDat(object):
 
             return out
 
-        def gen_line2(specie):
-            """Generate the second line corresponding to the specie
-
-            Parameters:
-                specie : ``PyMuTT.models.empirical.thermdat.Thermdat``
-                    Nasa specie to take information from
-            """
-            line = ''.join(
-                map(lambda x: format(x, '15.8E'), specie.a_high[0:5]))
-            line += format(2, '5d')
-
-            return line
-
-        def gen_line3(specie):
-            """Generate the second line corresponding to the specie
-
-            Parameters:
-                specie : ``PyMuTT.models.empirical.thermdat.Thermdat``
-                    Nasa specie to take information from
-            """
-            line = ''.join(
-                map(lambda x: format(x, '15.8E'), specie.a_high[5:7]))
-            line += ''.join(
-                map(lambda x: format(x, '15.8E'), specie.a_low[0:3]))
-            line += format(3, '5d')
-
-            return line
-
-        def gen_line4(specie):
-            """Generate the second line corresponding to the specie
-
-            Parameters:
-                specie : ``PyMuTT.models.empirical.thermdat.Thermdat``
-                    Nasa specie to take information from
-            """
-            line = ''.join(
-                map(lambda x: format(x, '15.8E'), specie.a_low[3:7]))
-            line += ' '*15 + format(4, '5d')
-
-            return line
-
         output = [
                 'THERMO ALL', 
                 '{:10d}{:10d}{:10d}'.format(100,500,1500)
                 ]
 
+        aval_to_str = lambda a_val: ''.join(
+            map(lambda x: format(x, '15.8E'), a_val))
+
         for specie in self.nasa_species:
-            output.append(gen_line1(specie, write_date=write_date))
-            output.append(gen_line2(specie))
-            output.append(gen_line3(specie))
-            output.append(gen_line4(specie))
+            output.append(gen_line1(specie, write_date=write_date)) # Line 1
+            # Line 2
+            line = aval_to_str(specie.a_high[0:5])
+            line += format(2, '5d')
+            output.append(line)
+            # Line 3
+            line = aval_to_str(specie.a_high[5:7])
+            line += aval_to_str(specie.a_low[0:3])
+            line += format(3, '5d')
+            output.append(line)
+            # Line 4
+            line = aval_to_str(specie.a_low[3:7])
+            line += ' '*15 + format(4, '5d') # Account for missing 5th float
         output.append('END')
 
         return '\n'.join(output) + '\n'
@@ -146,7 +121,7 @@ class ThermDat(object):
             file_name (str): Name of file to write to
         """
         with open(file_name, 'w') as f_ptr:
-            f_ptr.write(self.__str__(write_date=write_date) + '\n')
+            f_ptr.write(self.__str__(write_date=write_date))
 
     @staticmethod
     def from_string(string):
